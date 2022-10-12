@@ -1,8 +1,6 @@
 // Esse tipo de comentário que estão antes de todas as funções são chamados de JSdoc,
 // experimente passar o mouse sobre o nome das funções e verá que elas possuem descrições! 
 
-// const { fetchProducts } = require('./helpers/fetchProducts');
-
 // Fique a vontade para modificar o código já escrito e criar suas próprias funções!
 
 /**
@@ -10,6 +8,7 @@
  * @param {string} imageSource - URL da imagem.
  * @returns {Element} Elemento de imagem do produto.
  */
+
  const sectionItens = document.querySelector('.items');
 
 const createProductImageElement = (imageSource) => {
@@ -32,43 +31,9 @@ const createCustomElement = (element, className, innerText) => {
   e.innerText = innerText;
   return e;
 };
-
-/**
- * Função responsável por criar e retornar o elemento do produto.
- * @param {Object} product - Objeto do produto. 
- * @param {string} product.id - ID do produto.
- * @param {string} product.title - Título do produto.
- * @param {string} product.thumbnail - URL da imagem do produto.
- * @returns {Element} Elemento de produto.
- */
-const createProductItemElement = ({ id, title, thumbnail }) => {
-  const section = document.createElement('section');
-  section.className = 'item';
-  
-  section.appendChild(createCustomElement('span', 'item_id', id));
-  section.appendChild(createCustomElement('span', 'item__title', title));
-  section.appendChild(createProductImageElement(thumbnail));
-  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-  
-  return section;
+const cartItemClickListener = () => {
+  // coment
 };
-
-const objectApi = async () => {
-  const obj = await fetchProducts('computador');
-    obj.results.reduce((acc, { id, title, thumbnail }) => {
-      // console.log();
-      sectionItens.appendChild(createProductItemElement({ id, title, thumbnail }));
-      // console.log(cur.thumbnail);
-      return acc;
-    }, '');
-};
-
-/**
- * Função que recupera o ID do produto passado como parâmetro.
- * @param {Element} product - Elemento do produto.
- * @returns {string} ID do produto.
- */
-const getIdFromProductItem = (product) => product.querySelector('span.id').innerText;
 
 /**
  * Função responsável por criar e retornar um item do carrinho.
@@ -85,6 +50,54 @@ const createCartItemElement = ({ id, title, price }) => {
   li.addEventListener('click', cartItemClickListener);
   return li;
 };
+const cartItens = document.querySelector('.cart__items');
+
+const addItenToCart = async (button) => {
+const product = await fetchItem(button.itenId);
+cartItens.appendChild(createCartItemElement(product));
+};
+
+/**
+ * Função responsável por criar e retornar o elemento do produto.
+ * @param {Object} product - Objeto do produto. 
+ * @param {string} product.id - ID do produto.
+ * @param {string} product.title - Título do produto.
+ * @param {string} product.thumbnail - URL da imagem do produto.
+ * @returns {Element} Elemento de produto.
+ */
+const createProductItemElement = ({ id, title, thumbnail }) => {
+  const section = document.createElement('section');
+  section.className = 'item';
+  
+  section.appendChild(createCustomElement('span', 'item_id', id));
+  section.appendChild(createCustomElement('span', 'item__title', title));
+  section.appendChild(createProductImageElement(thumbnail));
+  const button = createCustomElement('button', 'item__add', 'Adicionar ao carrinho!');
+  button.itenId = id;
+  button.addEventListener('click', () => addItenToCart(button));
+  section.appendChild(button);
+  return section;
+};
+
+const objectApi = async () => {
+  const obj = await fetchProducts('computador');
+    obj.results.reduce((acc, { id, title, thumbnail }) => {
+      sectionItens.appendChild(createProductItemElement({ id, title, thumbnail }));
+      // console.log(cur.thumbnail);
+      return acc;
+    }, '');
+};
+
+/**
+ * Função que recupera o ID do produto passado como parâmetro.
+ * @param {Element} product - Elemento do produto.
+ * @returns {string} ID do produto.
+ */
+const getIdFromProductItem = (product) => product.querySelector('span.id').innerText;
+
+/* const getObjectId = async (id) => {
+  const itensForId = await fetchItem(id);
+}; */
 
 window.onload = () => { 
 objectApi();
