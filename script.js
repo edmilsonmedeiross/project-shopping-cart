@@ -9,6 +9,7 @@
  * @returns {Element} Elemento de imagem do produto.
  */
 
+ const cartItens = document.querySelector('.cart__items');
  const sectionItens = document.querySelector('.items');
 
 const createProductImageElement = (imageSource) => {
@@ -31,8 +32,8 @@ const createCustomElement = (element, className, innerText) => {
   e.innerText = innerText;
   return e;
 };
-const cartItemClickListener = () => {
-  // coment
+const cartItemClickListener = (event) => {
+  cartItens.removeChild(event.target);
 };
 
 /**
@@ -50,7 +51,6 @@ const createCartItemElement = ({ id, title, price }) => {
   li.addEventListener('click', cartItemClickListener);
   return li;
 };
-const cartItens = document.querySelector('.cart__items');
 
 const addItenToCart = async (button) => {
 const product = await fetchItem(button.itenId);
