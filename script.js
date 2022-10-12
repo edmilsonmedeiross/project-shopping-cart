@@ -11,7 +11,7 @@
  * @returns {Element} Elemento de imagem do produto.
  */
  const sectionItens = document.querySelector('.items');
- 
+
 const createProductImageElement = (imageSource) => {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -42,7 +42,6 @@ const createCustomElement = (element, className, innerText) => {
  * @returns {Element} Elemento de produto.
  */
 const createProductItemElement = ({ id, title, thumbnail }) => {
-  
   const section = document.createElement('section');
   section.className = 'item';
   
