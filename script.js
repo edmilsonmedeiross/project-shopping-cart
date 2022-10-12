@@ -1,6 +1,8 @@
 // Esse tipo de comentário que estão antes de todas as funções são chamados de JSdoc,
 // experimente passar o mouse sobre o nome das funções e verá que elas possuem descrições! 
 
+// const { fetchProducts } = require('./helpers/fetchProducts');
+
 // Fique a vontade para modificar o código já escrito e criar suas próprias funções!
 
 /**
@@ -8,6 +10,8 @@
  * @param {string} imageSource - URL da imagem.
  * @returns {Element} Elemento de imagem do produto.
  */
+ const sectionItens = document.querySelector('.items');
+ 
 const createProductImageElement = (imageSource) => {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -38,15 +42,26 @@ const createCustomElement = (element, className, innerText) => {
  * @returns {Element} Elemento de produto.
  */
 const createProductItemElement = ({ id, title, thumbnail }) => {
+  
   const section = document.createElement('section');
   section.className = 'item';
-
+  
   section.appendChild(createCustomElement('span', 'item_id', id));
   section.appendChild(createCustomElement('span', 'item__title', title));
   section.appendChild(createProductImageElement(thumbnail));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
+  
   return section;
+};
+
+const objectApi = async () => {
+  const obj = await fetchProducts('computador');
+    obj.results.reduce((acc, { id, title, thumbnail }) => {
+      // console.log();
+      sectionItens.appendChild(createProductItemElement({ id, title, thumbnail }));
+      // console.log(cur.thumbnail);
+      return acc;
+    }, '');
 };
 
 /**
@@ -72,5 +87,7 @@ const createCartItemElement = ({ id, title, price }) => {
   return li;
 };
 
-window.onload = () => { };
+window.onload = () => { 
+objectApi();
+};
 // comentario
