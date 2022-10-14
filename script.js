@@ -11,6 +11,7 @@
 
  const cartItens = document.querySelector('.cart__items');
  const sectionItens = document.querySelector('.items');
+ let itensCart = [];
 
 const createProductImageElement = (imageSource) => {
   const img = document.createElement('img');
@@ -18,6 +19,13 @@ const createProductImageElement = (imageSource) => {
   img.src = imageSource;
   return img;
 };
+
+/**
+ * Função que recupera o ID do produto passado como parâmetro.
+ * @param {Element} product - Elemento do produto.
+ * @returns {string} ID do produto.
+ */
+ // const getIdFromProductItem = (product) => product.querySelector('span.id').innerText;
 
 /**
  * Função responsável por criar e retornar qualquer elemento.
@@ -33,7 +41,13 @@ const createCustomElement = (element, className, innerText) => {
   return e;
 };
 const cartItemClickListener = (event) => {
-  cartItens.removeChild(event.target);
+  itensCart = JSON.parse(getSavedCartItems());
+  const eventTarget = event.target;
+  cartItens.removeChild(eventTarget);
+  const idRemovedItenCart = eventTarget.innerText.substring(4, 17);
+  const spliced = itensCart.filter((iten) => iten.id !== idRemovedItenCart);
+  saveCartItems(JSON.stringify(spliced));
+  // console.log(spliced);
 };
 
 /**
@@ -53,8 +67,12 @@ const createCartItemElement = ({ id, title, price }) => {
 };
 
 const addItenToCart = async (button) => {
-const product = await fetchItem(button.itenId);
-cartItens.appendChild(createCartItemElement(product));
+  itensCart = JSON.parse(getSavedCartItems());
+  const product = await fetchItem(button.itenId);
+  itensCart.push(await product);
+    cartItens.appendChild(createCartItemElement(product));
+    // console.log(product);
+    saveCartItems(JSON.stringify(itensCart));
 };
 
 /**
@@ -68,7 +86,6 @@ cartItens.appendChild(createCartItemElement(product));
 const createProductItemElement = ({ id, title, thumbnail }) => {
   const section = document.createElement('section');
   section.className = 'item';
-  
   section.appendChild(createCustomElement('span', 'item_id', id));
   section.appendChild(createCustomElement('span', 'item__title', title));
   section.appendChild(createProductImageElement(thumbnail));
@@ -88,18 +105,19 @@ const objectApi = async () => {
     }, '');
 };
 
-/**
- * Função que recupera o ID do produto passado como parâmetro.
- * @param {Element} product - Elemento do produto.
- * @returns {string} ID do produto.
- */
-const getIdFromProductItem = (product) => product.querySelector('span.id').innerText;
-
-/* const getObjectId = async (id) => {
-  const itensForId = await fetchItem(id);
-}; */
+const reloadCart = () => {
+  if (!localStorage.getItem('cartItems')) {
+    saveCartItems(JSON.stringify([]));
+  } else {
+    const cartItensLocalStorage = JSON.parse(getSavedCartItems());
+    cartItensLocalStorage.forEach((iten) => {
+    cartItens.appendChild(createCartItemElement(iten));
+    });
+  }
+};
 
 window.onload = () => { 
-objectApi();
+  objectApi();
+  reloadCart();
 };
 // comentario
