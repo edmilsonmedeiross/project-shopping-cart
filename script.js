@@ -11,7 +11,7 @@
 
  const cartItens = document.querySelector('.cart__items');
  const sectionItens = document.querySelector('.items');
- const itensCart = [];
+ let itensCart = [];
  
 const createProductImageElement = (imageSource) => {
   const img = document.createElement('img');
@@ -41,12 +41,24 @@ const createCustomElement = (element, className, innerText) => {
   return e;
 };
 
+const totalPriceItensCart = () => {
+  const span = document.querySelector('.total-price');
+  const lis = document.querySelectorAll('.cart__item');
+  let sum = 0;
+  lis.forEach((iten) => {
+    sum += iten.price;
+  });
+  span.innerText = `Valor Total: R$ ${sum}`;
+};
+
 const cartItemClickListener = (event) => {
+  itensCart = getSavedCartItems();
   const eventTarget = event.target;
   cartItens.removeChild(eventTarget);
   const idRemovedItenCart = eventTarget.innerText.substring(4, 17);
-  const spliced = itensCart.filter((iten) => iten.id !== idRemovedItenCart);
-  saveCartItems(JSON.stringify(spliced));
+  itensCart = itensCart.filter((iten) => iten.id !== idRemovedItenCart);
+  saveCartItems(JSON.stringify(itensCart));
+  totalPriceItensCart();
   // console.log(spliced);
 };
 
@@ -62,6 +74,7 @@ const createCartItemElement = ({ id, title, price }) => {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `ID: ${id} | TITLE: ${title} | PRICE: $${price}`;
+  li.price = price;
   li.addEventListener('click', cartItemClickListener);
   return li;
 };
@@ -70,7 +83,7 @@ const addItenToCart = async (button) => {
   const product = await fetchItem(button.itenId);
   cartItens.appendChild(createCartItemElement(product));
   itensCart.push(product);
-  localStorage.clear();
+  totalPriceItensCart();
   saveCartItems(JSON.stringify(itensCart));
 };
 
@@ -109,9 +122,11 @@ const reloadCart = () => {
     saveCartItems('[]');
   } else {
     const cartItensLocalStorage = getSavedCartItems();
+    itensCart = getSavedCartItems();
     cartItensLocalStorage.forEach((iten) => {
     cartItens.appendChild(createCartItemElement(iten));
     });
+    totalPriceItensCart();
   }
 };
 
