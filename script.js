@@ -20,6 +20,18 @@ const createProductImageElement = (imageSource) => {
   return img;
 };
 
+const handleLoading = (local) => {
+  const span = document.createElement('span');
+  span.className = 'loading';
+  span.innerText = 'carregando...';
+  local.appendChild(span);
+};
+
+const removeLoading = (local) => {
+  const spanLoading = document.querySelector('.loading');
+  local.removeChild(spanLoading);
+};
+
 /**
  * Função que recupera o ID do produto passado como parâmetro.
  * @param {Element} product - Elemento do produto.
@@ -80,7 +92,9 @@ const createCartItemElement = ({ id, title, price }) => {
 };
 
 const addItenToCart = async (button) => {
+  handleLoading(cartItens);
   const product = await fetchItem(button.itenId);
+  removeLoading(cartItens);
   cartItens.appendChild(createCartItemElement(product));
   itensCart.push(product);
   totalPriceItensCart();
@@ -109,7 +123,9 @@ const createProductItemElement = ({ id, title, thumbnail }) => {
 };
 
 const objectApi = async () => {
+  handleLoading(sectionItens);
   const obj = await fetchProducts('computador');
+  removeLoading(sectionItens);
     obj.results.reduce((acc, { id, title, thumbnail }) => {
       sectionItens.appendChild(createProductItemElement({ id, title, thumbnail }));
       // console.log(cur.thumbnail);
