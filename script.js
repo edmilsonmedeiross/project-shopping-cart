@@ -129,6 +129,15 @@ const reloadCart = () => {
     totalPriceItensCart();
   }
 };
+const buttonClear = document.querySelector('.empty-cart');
+
+const cartCleanerButton = () => {
+  cartItens.innerText = '';
+  totalPriceItensCart();
+  localStorage.clear();
+};
+
+buttonClear.addEventListener('click', cartCleanerButton);
 
 window.onload = () => { 
   objectApi();
