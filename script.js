@@ -11,8 +11,8 @@
 
  const cartItens = document.querySelector('.cart__items');
  const sectionItens = document.querySelector('.items');
- let itensCart = [];
-
+ const itensCart = [];
+ 
 const createProductImageElement = (imageSource) => {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -40,8 +40,8 @@ const createCustomElement = (element, className, innerText) => {
   e.innerText = innerText;
   return e;
 };
+
 const cartItemClickListener = (event) => {
-  itensCart = JSON.parse(getSavedCartItems());
   const eventTarget = event.target;
   cartItens.removeChild(eventTarget);
   const idRemovedItenCart = eventTarget.innerText.substring(4, 17);
@@ -67,12 +67,11 @@ const createCartItemElement = ({ id, title, price }) => {
 };
 
 const addItenToCart = async (button) => {
-  itensCart = JSON.parse(getSavedCartItems());
   const product = await fetchItem(button.itenId);
-  itensCart.push(await product);
-    cartItens.appendChild(createCartItemElement(product));
-    // console.log(product);
-    saveCartItems(JSON.stringify(itensCart));
+  cartItens.appendChild(createCartItemElement(product));
+  itensCart.push(product);
+  localStorage.clear();
+  saveCartItems(JSON.stringify(itensCart));
 };
 
 /**
@@ -107,9 +106,9 @@ const objectApi = async () => {
 
 const reloadCart = () => {
   if (!localStorage.getItem('cartItems')) {
-    saveCartItems(JSON.stringify([]));
+    saveCartItems('[]');
   } else {
-    const cartItensLocalStorage = JSON.parse(getSavedCartItems());
+    const cartItensLocalStorage = getSavedCartItems();
     cartItensLocalStorage.forEach((iten) => {
     cartItens.appendChild(createCartItemElement(iten));
     });
