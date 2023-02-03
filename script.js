@@ -60,7 +60,7 @@ const totalPriceItensCart = () => {
   lis.forEach((iten) => {
     sum += iten.price;
   });
-  span.innerText = `Valor Total: R$ ${sum}`;
+  span.innerText = `Valor Total: R$ ${new Intl.NumberFormat('de-DE').format(sum)}`;
 };
 
 const cartItemClickListener = (event) => {
@@ -82,11 +82,12 @@ const cartItemClickListener = (event) => {
  * @param {string} product.price - Preço do produto.
  * @returns {Element} Elemento de um item do carrinho.
  */
-const createCartItemElement = ({ id, title, price }) => {
+const createCartItemElement = ({ id, title, price, thumbnail }) => {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `ID: ${id} | TITLE: ${title} | PRICE: $${price}`;
   li.price = price;
+  li.appendChild(createProductImageElement(thumbnail));
   li.addEventListener('click', cartItemClickListener);
   return li;
 };
@@ -109,13 +110,16 @@ const addItenToCart = async (button) => {
  * @param {string} product.thumbnail - URL da imagem do produto.
  * @returns {Element} Elemento de produto.
  */
+
 const createProductItemElement = ({ id, title, thumbnail }) => {
   const section = document.createElement('section');
   section.className = 'item';
   section.appendChild(createCustomElement('span', 'item_id', id));
   section.appendChild(createCustomElement('span', 'item__title', title));
   section.appendChild(createProductImageElement(thumbnail));
-  const button = createCustomElement('button', 'item__add', 'Adicionar ao carrinho!');
+  const button = createCustomElement(
+    'button', 'item__add btn btn-outline-success', 'Adicionar ao carrinho!',
+    );
   button.itenId = id;
   button.addEventListener('click', () => addItenToCart(button));
   section.appendChild(button);
@@ -139,6 +143,7 @@ const reloadCart = () => {
   } else {
     const cartItensLocalStorage = getSavedCartItems();
     itensCart = getSavedCartItems();
+    saveCartItems(JSON.stringify(itensCart));
     cartItensLocalStorage.forEach((iten) => {
     cartItens.appendChild(createCartItemElement(iten));
     });
